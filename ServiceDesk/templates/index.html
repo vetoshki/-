@@ -1,0 +1,207 @@
+<!DOCTYPE html> 
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система управления заявками</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="page">
+
+        <header class="header">
+            <div class="logo">Система управления заявками</div>
+
+            <div id="user-box" class="user-box hidden">
+                <div>
+                    <div id="user-name" class="user-name"></div>
+                    <div id="user-role" class="user-role"></div>
+                </div>
+                <button class="btn btn-light" onclick="logout()">Выйти</button>
+            </div>
+        </header>
+
+        <main class="main">
+
+            <!-- Форма входа -->
+            <section id="login-form" class="card">
+                <h1>Вход</h1>
+
+                <form onsubmit="login(event)">
+                    <label>Email</label>
+                    <input type="email" id="email" required>
+
+                    <label>Пароль</label>
+                    <input type="password" id="password" required>
+
+                    <button type="submit" class="btn">Войти</button>
+                </form>
+
+                <div class="hint">
+                    <div><b>Тестовые учетные записи (для демонстрации работы системы)</b></div>
+                    <div><b>"Используются только в учебной версии проекта"</b></div>
+                    <div>user@example.com / password123</div>
+                    <div>specialist@example.com / password123</div>
+                    <div>admin@example.com / password123</div>
+                </div>
+            </section>
+
+            <!-- Основной интерфейс -->
+            <section id="app-ui" class="hidden">
+
+                <nav class="tabs">
+                    <button id="tab-create-btn" class="tab active" data-tab="tab-create">
+                        Создать заявку
+                    </button>
+
+                    <button id="tab-my-btn" class="tab" data-tab="tab-my">
+                        Мои заявки
+                    </button>
+
+                    <button id="tab-open-btn" class="tab hidden" data-tab="tab-open">
+                        Открытые
+                    </button>
+
+                    <button id="tab-assigned-btn" class="tab hidden" data-tab="tab-assigned">
+                        В работе
+                    </button>
+
+                    <button id="tab-kb-btn" class="tab hidden" data-tab="tab-kb">
+                        База знаний
+                    </button>
+
+                    <button id="tab-stats-btn" class="tab hidden" data-tab="tab-stats">
+                        Статистика
+                    </button>
+                </nav>
+
+                <div id="notify" class="notify"></div>
+
+                <!-- Создание заявки -->
+                <section id="tab-create" class="tab-page active">
+                    <div class="card">
+                        <h2>Новая заявка</h2>
+
+                        <form onsubmit="createTicket(event)">
+                            <label>Описание проблемы</label>
+                            <textarea id="description" required></textarea>
+
+                            <label>Контактная информация</label>
+                            <input type="text" id="contact-info" required>
+
+                            <button class="btn">Создать</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Мои заявки -->
+                <section id="tab-my" class="tab-page">
+                    <div class="card">
+                        <h2>Мои заявки</h2>
+
+                        <button class="btn btn-light" onclick="loadMyTickets()">
+                            Обновить
+                        </button>
+
+                        <div id="my-list" class="grid"></div>
+                    </div>
+                </section>
+
+                <!-- Открытые заявки -->
+                <section id="tab-open" class="tab-page">
+                    <div class="card">
+                        <h2>Открытые заявки</h2>
+
+                        <button class="btn btn-light" onclick="loadOpenTickets()">
+                            Обновить
+                        </button>
+
+                        <div id="open-list" class="grid"></div>
+                    </div>
+                </section>
+
+                <!-- В работе -->
+                <section id="tab-assigned" class="tab-page">
+                    <div class="card">
+                        <h2>Заявки в работе</h2>
+
+                        <button class="btn btn-light" onclick="loadAssignedTickets()">
+                            Обновить
+                        </button>
+
+                        <div id="assigned-list" class="grid"></div>
+                    </div>
+                </section>
+
+                <!-- Детали заявки -->
+                <section id="tab-details" class="tab-page">
+                    <div class="card">
+                        <h2>Обработка заявки</h2>
+
+                        <!-- Здесь будет карточка заявки + ML рекомендации -->
+                        <div id="details-info"></div>
+
+                        <div class="divider"></div>
+
+                        <h3>Решение специалиста</h3>
+
+                        <form onsubmit="resolveTicket(event)">
+                            <label>Описание выполненных действий</label>
+                            <textarea id="applied-solution"></textarea>
+
+                            <label class="checkbox">
+                                <input type="checkbox" id="used-kb">
+                                Использовано решение из базы знаний
+                            </label>
+
+                            <input type="hidden" id="accepted-kb-id">
+
+                            <button class="btn btn-green">
+                                Завершить заявку
+                            </button>
+                        </form>
+
+                        <button class="btn btn-light" onclick="backToAssigned()">
+                            Назад
+                        </button>
+                    </div>
+                </section>
+
+                <!-- База знаний -->
+                <section id="tab-kb" class="tab-page">
+                    <div class="card">
+                        <h2>База знаний</h2>
+
+                        <button class="btn btn-light" onclick="loadKnowledge()">
+                            Обновить
+                        </button>
+
+                        <div id="kb-list" class="grid"></div>
+                    </div>
+                </section>
+
+                <!-- Статистика -->
+                <section id="tab-stats" class="tab-page">
+                    <div class="card">
+                        <h2>Статистика</h2>
+
+                        <button class="btn btn-light" onclick="loadStats()">
+                            Обновить
+                        </button>
+
+                        <div id="stats-box"></div>
+                    </div>
+                </section>
+
+            </section>
+        </main>
+
+        <footer class="footer">
+            Ветошкин Максим, ВКР по теме: «Разработка системы управления заявками сервисной службы с интеллектуальным модулем рекомендаций на основе базы знаний»
+        </footer>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

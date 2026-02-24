@@ -1,0 +1,11 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+sqlalchemy==2.0.23
+asyncpg==0.29.0
+pydantic==2.5.0
+
+scikit-learn==1.3.2
+nltk==3.8.1
+pymorphy2==0.9.1
+pymorphy2-dicts-ru==2.4.417127.4579844
+jinja2==3.1.6
